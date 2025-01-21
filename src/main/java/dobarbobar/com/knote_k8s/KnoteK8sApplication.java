@@ -37,5 +37,25 @@ class KNoteController {
 
     @Autowired
     private NotesRepository notesRepository;
+	
+	@GetMapping("/")
+    public String index(Model model) {
+        getAllNotes(model);
+        return "index";
+    }
+
+    private void getAllNotes(Model model) {
+        List<Note> notes = notesRepository.findAll();
+        Collections.reverse(notes);
+        model.addAttribute("notes", notes);
+    }
+	
+	private void saveNote(String description, Model model) {
+	  if (description != null && !description.trim().isEmpty()) {
+		notesRepository.save(new Note(null, description.trim()));
+		//After publish you need to clean up the textarea
+		model.addAttribute("description", "");
+  }
+}
 
 }
