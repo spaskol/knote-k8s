@@ -27,3 +27,7 @@ class Note {
         return description;
     }
 }
+
+interface NotesRepository extends MongoRepository<Note, String> {
+
+}
