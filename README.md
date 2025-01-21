@@ -56,6 +56,23 @@ Tue Jan 21 21:01:05 CET 2025
 There was an unexpected error (type=Internal Server Error, status=500).
 
 
+$mvn -version
+The JAVA_HOME environment variable is not defined correctly,
+this environment variable is needed to run this program.
+
+to fix:
+sudo apt update
+sudo apt install openjdk-17-jdk
+readlink -f $(which java)
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
+
+$mvn -version
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+Maven home: /mnt/c/apache-maven-3.9.9
+Java version: 17.0.13, vendor: Ubuntu, runtime: /usr/lib/jvm/java-17-openjdk-amd64
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "5.15.167.4-microsoft-standard-wsl2", arch: "amd64", family: "unix"
+
 <h1>Whitelabel Error Page</h1><p>This application has no explicit mapping for /error, so you are seeing this as a fallback.</p><div id="created">Tue Jan 21 21:01:05 CET 2025</div><div>There was an unexpected error (type=Internal Server Error, status=500).</div>
 
 remove test folder to ommit tests.
