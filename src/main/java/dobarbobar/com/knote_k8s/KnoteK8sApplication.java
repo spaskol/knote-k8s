@@ -58,4 +58,20 @@ class KNoteController {
   }
 }
 
+@PostMapping("/note")
+public String saveNotes(@RequestParam("image") MultipartFile file,
+                        @RequestParam String description,
+                        @RequestParam(required = false) String publish,
+                        @RequestParam(required = false) String upload,
+                        Model model) throws IOException {
+
+  if (publish != null && publish.equals("Publish")) {
+    saveNote(description, model);
+    getAllNotes(model);
+    return "redirect:/";
+  }
+  // After save fetch all notes again
+  return "index";
+}
+
 }
