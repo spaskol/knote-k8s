@@ -31,3 +31,11 @@ class Note {
 interface NotesRepository extends MongoRepository<Note, String> {
 
 }
+
+@Controller
+class KNoteController {
+
+    @Autowired
+    private NotesRepository notesRepository;
+
+}
