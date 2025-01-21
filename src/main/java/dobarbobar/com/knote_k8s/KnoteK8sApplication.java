@@ -11,3 +11,19 @@ public class KnoteK8sApplication {
 	}
 
 }
+
+@Document(collection = "notes")
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+class Note {
+    @Id
+    private String id;
+    private String description;
+
+    @Override
+    public String toString() {
+        return description;
+    }
+}
