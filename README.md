@@ -224,6 +224,7 @@ docker push
 
 ## Kubernetes
 
+### Install kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
 echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
@@ -234,5 +235,30 @@ Client Version: v1.32.1
 Kustomize Version: v5.5.0
 
 rm kubectl kubectl.sha256
-  
+
+### Install Minicube
+curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+
+### Start Minicube
+minikube start
+
+
+### kubectl cheatsheet
+source <(kubectl completion bash) # set up autocomplete in bash into the current shell, bash-completion package should be installed first.
+echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+
+vim ~/.bashrc
+alias k=kubectl
+complete -o default -F __start_kubectl k
+
+### apply yaml files from kube directory
+kubectl apply -f kube/
+
+### fixing issue with the images
+
+For this you need to test when delete the pod and then open the URL in new in-private session the image disappear.
+
+
+## Source
 Source: https://learnk8s.io/spring-boot-kubernetes-guide
