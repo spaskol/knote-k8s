@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><title></title>
-    <link rel="stylesheet" href="tachyons.min.css">
+    <link rel="stylesheet" href="/tachyons.min.css">
 </head>
 <body class="ph3 pt0 pb4 mw7 center sans-serif">
 <h1 class="f2 mb0"><span class="gold">k</span>note</h1>

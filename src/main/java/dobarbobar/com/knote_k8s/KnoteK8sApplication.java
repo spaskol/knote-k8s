@@ -1,5 +1,6 @@
 package dobarbobar.com.knote_k8s;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -144,7 +145,7 @@ class KNoteController {
             uploadsDir.mkdir();
         }
         String fileId = UUID.randomUUID().toString() + "." +
-                file.getOriginalFilename().split("\\.")[1];
+                          file.getOriginalFilename().split("\\.")[1];
         file.transferTo(new File(properties.getUploadDir() + fileId));
         model.addAttribute("description",
                 description + " ![](/uploads/" + fileId + ")");
