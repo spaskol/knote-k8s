@@ -127,5 +127,5 @@ Caused by: java.net.ConnectException: Connection refused
         at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:79) ~[mongodb-driver-core-5.2.1.jar!/:na]
         ... 3 common frames omitted
 
-
+application propperti
   
