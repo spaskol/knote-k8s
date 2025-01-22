@@ -147,28 +147,7 @@ change docker FROM image
     --rm \
     --network=knote mongo \
 
-## Docker Hub
 
-docker login
-user your docker hub username and password
-
-Because I didn't tag corretly the image I couldn't push at the beginning.
-
-Using default tag: latest
-The push refers to repository [docker.io/library/knote-k8s]
-32e4514a485c: Preparing
-8b338a10df53: Preparing
-238b684bbac1: Preparing
-faed2c48e448: Preparing
-b57c79f4a9f3: Preparing
-d60e01b37e74: Waiting
-e45cfbc98a50: Waiting
-762d8e1a6054: Waiting
-denied: requested access to the resource is denied
-
-change tag
-docker tag knote-k8s yourusername/knote-k8s:latest
-docker push
 ## Java version too high
 
 ~$ docker run   --name=knote-k8s   --rm   --network=knote   -p 8080:8080   -e MONGO_URL=mongodb://mongo:27017/dev   knote-k8s:latest
@@ -220,7 +199,12 @@ to
 commit: cb4f0f178cfb6d9e8be8779b15cf6cd8ffef08f4
 after this commit I was able to run the application in the browser.
 
-## Push to Docker Hub
+## Docker Hub
+
+docker login
+user your docker hub username and password
+
+Because I didn't tag corretly the image I couldn't push at the beginning.
 
 Using default tag: latest
 The push refers to repository [docker.io/library/knote-k8s]
@@ -234,6 +218,21 @@ e45cfbc98a50: Waiting
 762d8e1a6054: Waiting
 denied: requested access to the resource is denied
 
-application propperti
+change tag
+docker tag knote-k8s yourusername/knote-k8s:latest
+docker push
+
+## Kubernetes
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+$ kubectl version --client
+Client Version: v1.32.1
+Kustomize Version: v5.5.0
+
+rm kubectl kubectl.sha256
   
 Source: https://learnk8s.io/spring-boot-kubernetes-guide
