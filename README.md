@@ -5,6 +5,9 @@ Here I will write the issues I faced and then I will make detiled ReadMe
 
 ## I mistakenly select Gradle instead of Maven
 
+When I used https://start.spring.io/ to create Spring Boot application I didn't change to Maven.
+
+
 ## Maven not have JAVA_HOME env in WSL
 
 ```bash
