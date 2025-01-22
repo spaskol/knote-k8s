@@ -96,6 +96,24 @@ spring.data.mongodb.uri=${MONGO_URL:mongodb://localhost:27017/dev}
 
 maybe this is because I missed the step with the mongoDB local install
 
+com.mongodb.MongoSocketOpenException: Exception opening socket
+        at com.mongodb.internal.connection.SocketStream.lambda$open$0(SocketStream.java:85) ~[mongodb-driver-core-5.2.1.jar!/:na]
+        at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[na:na]
+        at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:85) ~[mongodb-driver-core-5.2.1.jar!/:na]
+        at com.mongodb.internal.connection.InternalStreamConnection.open(InternalStreamConnection.java:233) ~[mongodb-driver-core-5.2.1.jar!/:na]
+        at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitor.lookupServerDescription(DefaultServerMonitor.java:219) ~[mongodb-driver-core-5.2.1.jar!/:na]
+        at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitor.run(DefaultServerMonitor.java:176) ~[mongodb-driver-core-5.2.1.jar!/:na]
+Caused by: java.net.ConnectException: Connection refused
+        at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+        at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+        at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[na:na]
+        at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:597) ~[na:na]
+        at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+        at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+        at com.mongodb.internal.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:76) ~[mongodb-driver-core-5.2.1.jar!/:na]
+        at com.mongodb.internal.connection.SocketStream.initializeSocket(SocketStream.java:104) ~[mongodb-driver-core-5.2.1.jar!/:na]
+        at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:79) ~[mongodb-driver-core-5.2.1.jar!/:na]
+        ... 3 common frames omitted
 
 ## remove test folder to ommit tests.
 
@@ -151,26 +169,34 @@ openjdk version "11.0.2" 2019-01-15
 OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.2+9)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.2+9, mixed mode)
 
+mvn clean install
 
+ knote-k8s: Compilation failure: Compilation failure:
+[ERROR] /home/ubuntu/knote-k8s/src/main/java/dobarbobar/com/knote_k8s/KnoteK8sApplication.java:[11,52] cannot access org.springframework.beans.factory.annotation.Autowired
+[ERROR]   bad class file: /home/ubuntu/.m2/repository/org/springframework/spring-beans/6.2.1/spring-beans-6.2.1.jar(/org/springframework/beans/factory/annotation/Autowired.class)
+[ERROR]     class file has wrong version 61.0, should be 55.0
+[ERROR]     Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /home/ubuntu/knote-k8s/src/main/java/dobarbobar/com/knote_k8s/KnoteK8sApplication.java:[12,52] cannot access org.springframework.beans.factory.annotation.Value
+[ERROR]   bad class file: /home/ubuntu/.m2/repository/org/springframework/spring-beans/6.2.1/spring-beans-6.2.1.jar(/org/springframework/beans/factory/annotation/Value.class)
+[ERROR]     class file has wrong version 61.0, s
+...
 
-com.mongodb.MongoSocketOpenException: Exception opening socket
-        at com.mongodb.internal.connection.SocketStream.lambda$open$0(SocketStream.java:85) ~[mongodb-driver-core-5.2.1.jar!/:na]
-        at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[na:na]
-        at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:85) ~[mongodb-driver-core-5.2.1.jar!/:na]
-        at com.mongodb.internal.connection.InternalStreamConnection.open(InternalStreamConnection.java:233) ~[mongodb-driver-core-5.2.1.jar!/:na]
-        at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitor.lookupServerDescription(DefaultServerMonitor.java:219) ~[mongodb-driver-core-5.2.1.jar!/:na]
-        at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitor.run(DefaultServerMonitor.java:176) ~[mongodb-driver-core-5.2.1.jar!/:na]
-Caused by: java.net.ConnectException: Connection refused
-        at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
-        at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
-        at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[na:na]
-        at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:597) ~[na:na]
-        at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
-        at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
-        at com.mongodb.internal.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:76) ~[mongodb-driver-core-5.2.1.jar!/:na]
-        at com.mongodb.internal.connection.SocketStream.initializeSocket(SocketStream.java:104) ~[mongodb-driver-core-5.2.1.jar!/:na]
-        at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:79) ~[mongodb-driver-core-5.2.1.jar!/:na]
-        ... 3 common frames omitted
+from
+
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.1</version>
+		<relativePath/> <!-- lookup parent from repository -->
+
+to
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.6.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+
+commit: cb4f0f178cfb6d9e8be8779b15cf6cd8ffef08f4
+after this commit I was able to run the application in the browser.
+
 
 application propperti
   
