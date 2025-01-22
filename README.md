@@ -76,7 +76,7 @@ I put this in the pom.xml file
     </dependency>
 </dependencies>
 
-## 3. DB not connecting
+## DB not connecting
 
 
 Whitelabel Error Page
