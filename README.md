@@ -78,16 +78,13 @@ I put this in the pom.xml file
 
 ## 3. DB not connecting
 
+
 Whitelabel Error Page
 
 This application has no explicit mapping for /error, so you are seeing this as a fallback.
 Tue Jan 21 21:01:05 CET 2025
 There was an unexpected error (type=Internal Server Error, status=500).
 
-
-
-
-<h1>Whitelabel Error Page</h1><p>This application has no explicit mapping for /error, so you are seeing this as a fallback.</p><div id="created">Tue Jan 21 21:01:05 CET 2025</div><div>There was an unexpected error (type=Internal Server Error, status=500).</div>
 
 change application.properties
 instead of 
