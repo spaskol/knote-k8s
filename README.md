@@ -258,6 +258,30 @@ kubectl apply -f kube/
 expose url
 minikube service knote --url
 
+$ k get pods
+NAME                     READY   STATUS              RESTARTS   AGE
+knote-76bf7f8d77-lc78f   1/1     Running             0          3m21s
+minio-c886fd5c4-85rsz    0/1     ContainerCreating   0          3m21s
+mongo-554fb5cc8b-hb7bp   1/1     Running             0          12h
+mongo-7c67ff9cc-v4prf    0/1     Error               0          3m20s
+
+   Back-off restarting failed container mongo in pod mongo-7c67ff9cc-92lt7_default(130798c8-b7e5-4a0b-b598-11c99ca389c8)
+
+   $ k get pods
+NAME                     READY   STATUS              RESTARTS   AGE
+knote-76bf7f8d77-lc78f   1/1     Running             0          5m42s
+minio-c886fd5c4-85rsz    1/1     Running             0          5m42s
+mongo-7c67ff9cc-zmpxr    0/1     ContainerCreating   0          4s
+
+k delete pod mongo-7c67ff9cc-v4prf
+k delete pod mongo-7c67ff9cc-92lt7
+
+$ k get pods
+NAME                     READY   STATUS    RESTARTS      AGE
+knote-76bf7f8d77-lc78f   1/1     Running   0             6m33s
+minio-c886fd5c4-85rsz    1/1     Running   0             6m33s
+mongo-7c67ff9cc-zmpxr    1/1     Running   3 (30s ago)   55s
+
 ### fixing issue with the images
 
 For this you need to test when delete the pod and then open the URL in new in-private session the image disappear.
