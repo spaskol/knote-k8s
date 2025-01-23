@@ -346,7 +346,7 @@ mongo-554fb5cc8b-lhrhh   1/1     Running   0          4m12s
 
 ### Delete Knote-k8s resources
 
-s$ kubectl delete -f kube
+$ kubectl delete -f kube
 deployment.apps "knote" deleted
 service "knote" deleted
 persistentvolumeclaim "minio-pvc" deleted
@@ -356,8 +356,10 @@ persistentvolumeclaim "mongo-pvc" deleted
 service "mongo" deleted
 deployment.apps "mongo" deleted
 
-k get pods
+$ k get pods
 No resources found in default namespace.
+
+$ minikube stop
 
 ## Source
 Source: https://learnk8s.io/spring-boot-kubernetes-guide
