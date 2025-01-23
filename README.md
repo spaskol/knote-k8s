@@ -255,10 +255,19 @@ complete -o default -F __start_kubectl k
 ### apply yaml files from kube directory
 kubectl apply -f kube/
 
+expose url
+minikube service knote --url
+
 ### fixing issue with the images
 
 For this you need to test when delete the pod and then open the URL in new in-private session the image disappear.
 
+I updated the code and did again:
+
+apply -f kube
+minikube service knote --url
+
+commit:
 
 ## Source
 Source: https://learnk8s.io/spring-boot-kubernetes-guide
