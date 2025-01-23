@@ -9,4 +9,4 @@ Simple Spring Boot App Deployment
 You can read my strugle in folder issues
 
 ## Source
-Source: https://learnk8s.io/spring-boot-kubernetes-guide
+https://learnk8s.io/spring-boot-kubernetes-guide
