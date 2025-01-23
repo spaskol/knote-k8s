@@ -344,5 +344,20 @@ knote-76bf7f8d77-xkplb   1/1     Running   0          55s
 minio-c886fd5c4-85rsz    1/1     Running   0          13m
 mongo-554fb5cc8b-lhrhh   1/1     Running   0          4m12s
 
+### Delete Knote-k8s resources
+
+s$ kubectl delete -f kube
+deployment.apps "knote" deleted
+service "knote" deleted
+persistentvolumeclaim "minio-pvc" deleted
+service "minio" deleted
+deployment.apps "minio" deleted
+persistentvolumeclaim "mongo-pvc" deleted
+service "mongo" deleted
+deployment.apps "mongo" deleted
+
+k get pods
+No resources found in default namespace.
+
 ## Source
 Source: https://learnk8s.io/spring-boot-kubernetes-guide
