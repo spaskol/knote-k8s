@@ -282,6 +282,23 @@ knote-76bf7f8d77-lc78f   1/1     Running   0             6m33s
 minio-c886fd5c4-85rsz    1/1     Running   0             6m33s
 mongo-7c67ff9cc-zmpxr    1/1     Running   3 (30s ago)   55s
 
+ k get pods
+NAME                     READY   STATUS             RESTARTS      AGE
+knote-76bf7f8d77-lc78f   1/1     Running            0             7m9s
+minio-c886fd5c4-85rsz    1/1     Running            0             7m9s
+mongo-7c67ff9cc-zmpxr    0/1     CrashLoopBackOff   3 (37s ago)   91s
+
+Whitelabel Error Page
+
+This application has no explicit mapping for /error, so you are seeing this as a fallback.
+Thu Jan 23 07:32:31 GMT 2025
+There was an unexpected error (type=Internal Server Error, status=500).
+Timed out after 30000 ms while waiting to connect. Client view of cluster state is {type=UNKNOWN, servers=[{address=mongo:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused (Connection refused)}}]; nested exception is com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting to connect. Client view of cluster state is {type=UNKNOWN, servers=[{address=mongo:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused (Connection refused)}}]
+
+This was because I changed mogo image from just mongo to mongo:3.6.17-xenial. To fix this I just changed back the mongo deployment with the previous image mongo and I was able to access my data.
+
+After this the image was saved and when I open in new incognito window the image was shown.
+
 ### fixing issue with the images
 
 For this you need to test when delete the pod and then open the URL in new in-private session the image disappear.
