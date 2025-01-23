@@ -1,10 +1,11 @@
 package dobarbobar.com.knote_k8s;
 
-
+import io.minio.MinioClient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -18,17 +19,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -62,36 +64,54 @@ class Note {
     }
 }
 
-@Configuration
-@EnableConfigurationProperties(KnoteProperties.class)
-class KnoteConfig implements WebMvcConfigurer {
-
-    @Autowired
-    private KnoteProperties properties;
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-                .addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + properties.getUploadDir())
-                .setCachePeriod(3600)
-                .resourceChain(true)
-                .addResolver(new PathResourceResolver());
-    }
-
-}
-
 @ConfigurationProperties(prefix = "knote")
 class KnoteProperties {
-    @Value("${uploadDir:/tmp/uploads/}")
-    private String uploadDir;
 
-    public String getUploadDir() {
-        return uploadDir;
+    @Value("${minio.host:localhost}")
+    private String minioHost;
+
+    @Value("${minio.bucket:image-storage}")
+    private String minioBucket;
+
+    @Value("${minio.access.key:}")
+    private String minioAccessKey;
+
+    @Value("${minio.secret.key:}")
+    private String minioSecretKey;
+
+    @Value("${minio.useSSL:false}")
+    private boolean minioUseSSL;
+
+    @Value("${minio.reconnect.enabled:true}")
+    private boolean minioReconnectEnabled;
+
+    public String getMinioHost() {
+        return minioHost;
+    }
+
+    public String getMinioBucket() {
+        return minioBucket;
+    }
+
+    public String getMinioAccessKey() {
+        return minioAccessKey;
+    }
+
+    public String getMinioSecretKey() {
+        return minioSecretKey;
+    }
+
+    public boolean isMinioUseSSL() {
+        return minioUseSSL;
+    }
+
+    public boolean isMinioReconnectEnabled() {
+        return minioReconnectEnabled;
     }
 }
 
 @Controller
+@EnableConfigurationProperties(KnoteProperties.class)
 class KNoteController {
 
     @Autowired
@@ -101,6 +121,13 @@ class KNoteController {
 
     private Parser parser = Parser.builder().build();
     private HtmlRenderer renderer = HtmlRenderer.builder().build();
+
+    private MinioClient minioClient;
+
+    @PostConstruct
+    public void init() throws InterruptedException {
+        initMinio();
+    }
 
 
     @GetMapping("/")
@@ -122,8 +149,7 @@ class KNoteController {
             return "redirect:/";
         }
         if (upload != null && upload.equals("Upload")) {
-            if (file != null && file.getOriginalFilename() != null &&
-                    !file.getOriginalFilename().isEmpty()) {
+            if (file != null && file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
                 uploadImage(file, description, model);
             }
             getAllNotes(model);
@@ -132,6 +158,11 @@ class KNoteController {
         return "index";
     }
 
+    @GetMapping(value = "/img/{name}", produces = MediaType.IMAGE_PNG_VALUE)
+    public @ResponseBody byte[] getImageByName(@PathVariable String name) throws Exception {
+        InputStream imageStream = minioClient.getObject(properties.getMinioBucket(), name);
+        return IOUtils.toByteArray(imageStream);
+    }
 
     private void getAllNotes(Model model) {
         List<Note> notes = notesRepository.findAll();
@@ -140,26 +171,52 @@ class KNoteController {
     }
 
     private void uploadImage(MultipartFile file, String description, Model model) throws Exception {
-        File uploadsDir = new File(properties.getUploadDir());
-        if (!uploadsDir.exists()) {
-            uploadsDir.mkdir();
-        }
-        String fileId = UUID.randomUUID().toString() + "." +
-                          file.getOriginalFilename().split("\\.")[1];
-        file.transferTo(new File(properties.getUploadDir() + fileId));
+        String fileId = UUID.randomUUID().toString() + "." + file.getOriginalFilename().split("\\.")[1];
+        minioClient.putObject(properties.getMinioBucket(), fileId, file.getInputStream(),
+                                file.getSize(), null, null, file.getContentType());
         model.addAttribute("description",
-                description + " ![](/uploads/" + fileId + ")");
+                description + " ![](/img/" + fileId + ")");
     }
 
     private void saveNote(String description, Model model) {
         if (description != null && !description.trim().isEmpty()) {
-            //We need to translate markup to HTML
+            //You need to translate markup to HTML
             Node document = parser.parse(description.trim());
             String html = renderer.render(document);
             notesRepository.save(new Note(null, html));
             //After publish you need to clean up the textarea
             model.addAttribute("description", "");
         }
+    }
+
+    private void initMinio() throws InterruptedException {
+        boolean success = false;
+        while (!success) {
+            try {
+                minioClient = new MinioClient("http://" + properties.getMinioHost() + ":9000" ,
+                                                properties.getMinioAccessKey(),
+                                                properties.getMinioSecretKey(),
+                                        false);
+                // Check if the bucket already exists.
+                boolean isExist = minioClient.bucketExists(properties.getMinioBucket());
+                if (isExist) {
+                    System.out.println("> Bucket already exists.");
+                } else {
+                    minioClient.makeBucket(properties.getMinioBucket());
+                }
+                success = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("> Minio Reconnect: " + properties.isMinioReconnectEnabled());
+                if (properties.isMinioReconnectEnabled()) {
+                    Thread.sleep(5000);
+                } else {
+                    success = true;
+
+                }
+            }
+        }
+        System.out.println("> Minio initialized!");
     }
 
 }
