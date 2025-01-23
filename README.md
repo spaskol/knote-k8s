@@ -308,7 +308,41 @@ I updated the code and did again:
 apply -f kube
 minikube service knote --url
 
-commit:
+commit: 
+
+### Scaling
+$ kubectl scale --replicas=10 deployment/knote
+deployment.apps/knote scaled
+
+$ k get pods
+NAME                     READY   STATUS              RESTARTS   AGE
+knote-76bf7f8d77-4h6rd   0/1     ContainerCreating   0          3s
+knote-76bf7f8d77-7dmdw   0/1     ContainerCreating   0          3s
+knote-76bf7f8d77-8n25l   0/1     ContainerCreating   0          2s
+knote-76bf7f8d77-hz2kh   0/1     ContainerCreating   0          3s
+knote-76bf7f8d77-k7xzb   0/1     ContainerCreating   0          3s
+knote-76bf7f8d77-lc78f   1/1     Running             0          12m
+knote-76bf7f8d77-pg2rz   0/1     ContainerCreating   0          3s
+knote-76bf7f8d77-rx6hm   0/1     ContainerCreating   0          2s
+knote-76bf7f8d77-tl65l   0/1     ContainerCreating   0          3s
+knote-76bf7f8d77-xkplb   0/1     ContainerCreating   0          3s
+minio-c886fd5c4-85rsz    1/1     Running             0          12m
+mongo-554fb5cc8b-lhrhh   1/1     Running             0          3m20s
+
+$ k get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+knote-76bf7f8d77-4h6rd   1/1     Running   0          55s
+knote-76bf7f8d77-7dmdw   1/1     Running   0          55s
+knote-76bf7f8d77-8n25l   1/1     Running   0          54s
+knote-76bf7f8d77-hz2kh   1/1     Running   0          55s
+knote-76bf7f8d77-k7xzb   1/1     Running   0          55s
+knote-76bf7f8d77-lc78f   1/1     Running   0          13m
+knote-76bf7f8d77-pg2rz   1/1     Running   0          55s
+knote-76bf7f8d77-rx6hm   1/1     Running   0          54s
+knote-76bf7f8d77-tl65l   1/1     Running   0          55s
+knote-76bf7f8d77-xkplb   1/1     Running   0          55s
+minio-c886fd5c4-85rsz    1/1     Running   0          13m
+mongo-554fb5cc8b-lhrhh   1/1     Running   0          4m12s
 
 ## Source
 Source: https://learnk8s.io/spring-boot-kubernetes-guide
